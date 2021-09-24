@@ -59,7 +59,7 @@ class screenshot(object):
         return False
     def reset_increment(self):
         self.frames = 0
-    def screenshot_thread(self):
+    def thread(self):
      while True:
         if self.state:
             self.driver.switch_to.window(driver.window_handles[0])
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     WebDriverWait(driver, 20).until(EC.number_of_windows_to_be(1))
     driver.switch_to.window(driver.window_handles[0])
     scr = screenshot(driver)
-    t1 = threading.Thread(target=scr.screenshot_thread, args=[])
+    t1 = threading.Thread(target=scr.thread, args=[])
     t1.daemon = True
     t1.start()
     try:
