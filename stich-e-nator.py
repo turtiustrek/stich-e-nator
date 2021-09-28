@@ -104,8 +104,9 @@ if __name__ == "__main__":
           driver = webdriver.Chrome(executable_path=".\\chromedriver.exe", options=options)
         else:  
           driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
-    except Exception as e: 
-        process_version = re.search("(((((\d+\.)(\d+\.))(\d+\.))(\*|\d+)))",str(e))
+    except Exception as e:
+        #turtius: bodge to download the right chromedriver by using the exception since it prints out the version required
+        process_version = re.search("(((((\d+\.)(\d+\.))(\d+\.))(\*|\d+)))",str(e)) #find the version xx.xx.xx.xx in the exception
         if(process_version):
             process_version = process_version.group()
             print("Process version: %s" % (process_version))
@@ -123,12 +124,15 @@ if __name__ == "__main__":
         else:
             traceback.print_exc()
             exit()
+    #wait until discord landing page kicks in
     WebDriverWait(driver, 20).until(EC.number_of_windows_to_be(1))
     driver.switch_to.window(driver.window_handles[0])
+    #create a thread responsible for screenshots
     scr = screenshot(driver)
     t1 = threading.Thread(target=scr.thread, args=[])
     t1.daemon = True
     t1.start()
+    #listen for keypresses
     try:
      while True:
         if keyboard.is_pressed('F7'):
